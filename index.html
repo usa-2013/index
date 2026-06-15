@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Attendance Portal</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    .header p {
+      margin: 0;
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+    .card {
+      background: #1e293b;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    input,
+    select,
+    button {
+      width: 100%;
+      border: 1px solid #475569;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      color: #0f172a;
+      background: #f1f5f9;
+      font-family: inherit;
+      margin-bottom: 14px;
+    }
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+    button {
+      cursor: pointer;
+      background: #4338ca;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      margin-bottom: 12px;
+    }
+    button:hover {
+      background: #312e81;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(67, 56, 202, 0.2);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    button.secondary {
+      background: #475569;
+    }
+    button.secondary:hover {
+      background: #64748b;
+    }
+    button.success {
+      background: #22c55e;
+    }
+    button.success:hover {
+      background: #16a34a;
+    }
+    button.danger {
+      background: #dc2626;
+    }
+    button.danger:hover {
+      background: #b91c1c;
+    }
+    .success {
+      border-left: 4px solid #22c55e;
+      background: rgba(34, 197, 94, 0.1);
+      color: #86efac;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    .warning {
+      border-left: 4px solid #f59e0b;
+      background: rgba(245, 158, 11, 0.1);
+      color: #fbbf24;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    .error {
+      border-left: 4px solid #dc2626;
+      background: rgba(220, 38, 38, 0.1);
+      color: #fca5a5;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    #videoPreview,
+    #selfiePreview {
+      width: 100%;
+      border-radius: 12px;
+      background: #000;
+      margin-bottom: 14px;
+      object-fit: cover;
+      display: none;
+    }
+    #videoPreview {
+      aspect-ratio: 1;
+    }
+    #selfiePreview {
+      aspect-ratio: 1;
+      cursor: pointer;
+      border: 2px solid #475569;
+      transition: border-color 0.2s;
+    }
+    #selfiePreview:hover {
+      border-color: #4338ca;
+    }
+    .info-box {
+      background: rgba(67, 56, 202, 0.1);
+      border: 1px solid #4338ca;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      color: #a5b4fc;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .step-indicator {
+      background: rgba(148, 163, 184, 0.1);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .step-indicator.active {
+      background: rgba(34, 197, 94, 0.1);
+      color: #86efac;
+      border: 1px solid #22c55e;
+    }
+    .employee-detail {
+      background: rgba(67, 56, 202, 0.15);
+      border: 1px solid #4338ca;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .employee-detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(67, 56, 202, 0.3);
+    }
+    .employee-detail-row:last-child {
+      border-bottom: none;
+    }
+    .detail-label {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+    .detail-value {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+    .footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-top: 20px;
+    }
+    a {
+      color: #4338ca;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📷 Attendance Check-In</h1>
+      <p>Quick selfie capture for automatic attendance recording</p>
+      <div id="clockDisplay" style="font-size: 2rem; font-weight: 700; color: #4338ca; margin-top: 16px; font-family: 'Courier New', monospace;">--:--:--</div>
+    </div>
+
+    <div class="card">
+      <div id="saveMessage" class="success" style="display:none;"></div>
+      <div id="warningMessage" class="warning" style="display:none;"></div>
+      <div id="errorMessage" class="error" style="display:none;"></div>
+
+      <div class="step-indicator" id="stepIndicator">Step 1 of 3: Select your name</div>
+
+      <div id="step1">
+        <label for="employeeName">Your Name</label>
+        <select id="employeeName">
+          <option value="">-- Select your name --</option>
+        </select>
+      </div>
+
+      <div id="step2" style="display:none;">
+        <label>Camera</label>
+        <button type="button" id="startCamera">📷 Start Camera</button>
+        <video id="videoPreview" autoplay muted playsinline></video>
+        <button type="button" id="takeSelfie" style="display:none;">📸 Capture Selfie</button>
+      </div>
+
+      <div id="step3" style="display:none;">
+        <div class="step-indicator active">✓ Selfie Captured</div>
+        <img id="selfiePreview" alt="Selfie preview" title="Click to view employee details" />
+        <div id="employeeDetail"></div>
+        <button type="button" id="confirmAttendance" class="success">✓ Confirm Attendance</button>
+        <button type="button" id="retakePhoto" class="secondary">↻ Retake Photo</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>🔒 Your photos are stored locally on this device for profile matching only.</p>
+      <p><a href="employee.html">Admin Portal</a> · <a href="#">Help</a></p>
+    </div>
+  </div>
+
+  <script>
+    const defaultDirectory = [
+      { name: 'Mr. Chandrapal', id: 'CH001', password: 'CH001', shiftCode: 'A' },
+      { name: 'Mr. Shrichand', id: 'SH002', password: 'SH002', shiftCode: 'A' },
+      { name: 'MR. DINESH', id: 'DN003', password: 'DN003', shiftCode: 'A' },
+      { name: 'Mr. DEVARAO', id: 'DV004', password: 'DV004', shiftCode: 'A' },
+      { name: 'Mr. Arun Jat', id: 'AJ005', password: 'AJ005', shiftCode: 'A' },
+      { name: 'Mr. Sunny', id: 'SU006', password: 'SU006', shiftCode: 'A' },
+      { name: 'Mr. Rahul', id: 'RH007', password: 'RH007', shiftCode: 'A' },
+      { name: 'Mr. Rajkumar', id: 'RK008', password: 'RK008', shiftCode: 'A' },
+      { name: 'Mr. Ajeet', id: 'AE009', password: 'AE009', shiftCode: 'A' },
+      { name: 'Mr. Mohan', id: 'MH010', password: 'MH010', shiftCode: 'A' },
+      { name: 'Mr. Vikram', id: 'VK011', password: 'VK011', shiftCode: 'A' },
+      { name: 'Mr. Bigyan', id: 'BG012', password: 'BG012', shiftCode: 'A' },
+      { name: 'Mr. Indrapal', id: 'IP013', password: 'IP013', shiftCode: 'A' },
+      { name: 'Mr. Umesh', id: 'UM014', password: 'UM014', shiftCode: 'A' }
+    ];
+
+    const employeeName = document.getElementById('employeeName');
+    const startCamera = document.getElementById('startCamera');
+    const takeSelfie = document.getElementById('takeSelfie');
+    const videoPreview = document.getElementById('videoPreview');
+    const selfiePreview = document.getElementById('selfiePreview');
+    const confirmAttendance = document.getElementById('confirmAttendance');
+    const retakePhoto = document.getElementById('retakePhoto');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const stepIndicator = document.getElementById('stepIndicator');
+    const employeeDetail = document.getElementById('employeeDetail');
+    const saveMessage = document.getElementById('saveMessage');
+    const warningMessage = document.getElementById('warningMessage');
+    const errorMessage = document.getElementById('errorMessage');
+
+    let selfieDataURL = '';
+    let activeStream = null;
+
+    function getStoredDirectory() {
+      const saved = localStorage.getItem('employeeDirectory');
+      return saved ? JSON.parse(saved) : defaultDirectory;
+    }
+
+    function getDirectoryEntry(name) {
+      const directory = getStoredDirectory();
+      return directory.find(entry => entry.name === name) || null;
+    }
+
+    function getStoredProfiles() {
+      const saved = localStorage.getItem('employeeProfilePhotos');
+      return saved ? JSON.parse(saved) : {};
+    }
+
+    function getStoredRecords() {
+      const saved = localStorage.getItem('attendanceRecords');
+      return saved ? JSON.parse(saved) : [];
+    }
+
+    function saveRecords(records) {
+      localStorage.setItem('attendanceRecords', JSON.stringify(records));
+    }
+
+    function populateEmployees() {
+      const directory = getStoredDirectory();
+      employeeName.innerHTML = '<option value="">-- Select your name --</option>';
+      directory.forEach(entry => {
+        const option = document.createElement('option');
+        option.value = entry.name;
+        option.textContent = entry.name;
+        employeeName.appendChild(option);
+      });
+    }
+
+    function showMessage(element, text) {
+      element.textContent = text;
+      element.style.display = 'block';
+      setTimeout(() => {
+        element.style.display = 'none';
+      }, 4500);
+    }
+
+    function getShiftWindow(code) {
+      const map = {
+        A: { start: '08:00', end: '17:00' },
+        B: { start: '13:00', end: '22:00' },
+        C: { start: '22:00', end: '08:00' },
+        G: { start: '10:00', end: '19:00' }
+      };
+      return map[code] || { start: '00:00', end: '23:59' };
+    }
+
+    function getShiftCodeByTime() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const timeInMinutes = hours * 60 + minutes;
+
+      const shifts = [
+        { code: 'A', start: 480, end: 1020 },    // 08:00-17:00
+        { code: 'B', start: 780, end: 1320 },    // 13:00-22:00
+        { code: 'C', start: 1320, end: 480 },    // 22:00-08:00 (wraps midnight)
+        { code: 'G', start: 600, end: 1140 }     // 10:00-19:00
+      ];
+
+      let activeShifts = [];
+
+      for (let shift of shifts) {
+        let isActive = false;
+        if (shift.code === 'C') {
+          isActive = timeInMinutes >= shift.start || timeInMinutes < shift.end;
+        } else {
+          isActive = timeInMinutes >= shift.start && timeInMinutes < shift.end;
+        }
+        if (isActive) {
+          activeShifts.push(shift);
+        }
+      }
+
+      if (activeShifts.length === 0) return 'A';
+      if (activeShifts.length === 1) return activeShifts[0].code;
+
+      // Multiple active shifts - pick most recently started
+      let mostRecentShift = activeShifts[0];
+      let mostRecentStart = mostRecentShift.code === 'C' && timeInMinutes < 480 
+        ? 1320 + 1440
+        : mostRecentShift.start;
+
+      for (let shift of activeShifts) {
+        let startTime = shift.code === 'C' && timeInMinutes < 480
+          ? shift.start + 1440
+          : shift.start;
+        if (startTime > mostRecentStart) {
+          mostRecentStart = startTime;
+          mostRecentShift = shift;
+        }
+      }
+
+      return mostRecentShift.code;
+    }
+
+    function getShiftCodeByTime() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const timeInMinutes = hours * 60 + minutes;
+
+      const shifts = [
+        { code: 'A', start: 480, end: 1020 },    // 08:00-17:00
+        { code: 'B', start: 780, end: 1320 },    // 13:00-22:00
+        { code: 'C', start: 1320, end: 480 },    // 22:00-08:00 (wraps midnight)
+        { code: 'G', start: 600, end: 1140 }     // 10:00-19:00
+      ];
+
+      let activeShifts = [];
+
+      for (let shift of shifts) {
+        let isActive = false;
+        if (shift.code === 'C') {
+          isActive = timeInMinutes >= shift.start || timeInMinutes < shift.end;
+        } else {
+          isActive = timeInMinutes >= shift.start && timeInMinutes < shift.end;
+        }
+        if (isActive) {
+          activeShifts.push(shift);
+        }
+      }
+
+      if (activeShifts.length === 0) return 'A';
+      if (activeShifts.length === 1) return activeShifts[0].code;
+
+      // Multiple active shifts - pick most recently started
+      let mostRecentShift = activeShifts[0];
+      let mostRecentStart = mostRecentShift.code === 'C' && timeInMinutes < 480 
+        ? 1320 + 1440
+        : mostRecentShift.start;
+
+      for (let shift of activeShifts) {
+        let startTime = shift.code === 'C' && timeInMinutes < 480
+          ? shift.start + 1440
+          : shift.start;
+        if (startTime > mostRecentStart) {
+          mostRecentStart = startTime;
+          mostRecentShift = shift;
+        }
+      }
+
+      return mostRecentShift.code;
+    }
+
+    function showEmployeeDetail(name) {
+      const entry = getDirectoryEntry(name);
+      if (!entry) return;
+
+      const now = new Date();
+      const todayDate = now.toISOString().slice(0, 10);
+      const shiftCode = getShiftCodeByTime();
+      const shiftWindow = getShiftWindow(shiftCode);
+
+      employeeDetail.innerHTML = `
+        <div class="employee-detail">
+          <div class="employee-detail-row">
+            <span class="detail-label">Name</span>
+            <span class="detail-value">${entry.name}</span>
+          </div>
+          <div class="employee-detail-row">
+            <span class="detail-label">User ID</span>
+            <span class="detail-value">${entry.id}</span>
+          </div>
+          <div class="employee-detail-row">
+            <span class="detail-label">Shift Code</span>
+            <span class="detail-value">${shiftCode}</span>
+          </div>
+          <div class="employee-detail-row">
+            <span class="detail-label">Shift Time</span>
+            <span class="detail-value">${shiftWindow.start} - ${shiftWindow.end}</span>
+          </div>
+          <div class="employee-detail-row">
+            <span class="detail-label">Date</span>
+            <span class="detail-value">${todayDate}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function stopCamera() {
+      if (activeStream) {
+        activeStream.getTracks().forEach(track => track.stop());
+        activeStream = null;
+      }
+      videoPreview.style.display = 'none';
+      takeSelfie.style.display = 'none';
+    }
+
+    function resetPortal() {
+      selfieDataURL = '';
+      selfiePreview.src = '';
+      employeeDetail.innerHTML = '';
+      step1.style.display = 'block';
+      step2.style.display = 'none';
+      step3.style.display = 'none';
+      stepIndicator.textContent = 'Step 1 of 3: Select your name';
+      stepIndicator.classList.remove('active');
+      employeeName.value = '';
+      stopCamera();
+    }
+
+    async function getImageScore(imageUrl) {
+      return new Promise(resolve => {
+        const image = new Image();
+        image.crossOrigin = 'anonymous';
+        image.onload = () => {
+          const canvas = document.createElement('canvas');
+          const width = 160;
+          const height = Math.round((image.height / image.width) * 160);
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(image, 0, 0, width, height);
+          const data = ctx.getImageData(0, 0, width, height).data;
+          let total = 0;
+          for (let i = 0; i < data.length; i += 4) {
+            total += data[i] + data[i + 1] + data[i + 2];
+          }
+          resolve(total);
+        };
+        image.onerror = () => resolve(0);
+        image.src = imageUrl;
+      });
+    }
+
+    async function compareSelfies(currentPhoto, storedPhoto) {
+      if (!currentPhoto || !storedPhoto) return false;
+      const currentScore = await getImageScore(currentPhoto);
+      const storedScore = await getImageScore(storedPhoto);
+      return Math.abs(currentScore - storedScore) < 2000000;
+    }
+
+    employeeName.addEventListener('change', () => {
+      if (employeeName.value) {
+        const entry = getDirectoryEntry(employeeName.value);
+        if (entry) {
+          const profiles = getStoredProfiles();
+          const profileKey = `${entry.name}::${entry.id}`;
+          if (!profiles[profileKey]) {
+            showMessage(errorMessage, 'Your profile is not registered yet. Please contact admin.');
+            employeeName.value = '';
+            return;
+          }
+          step1.style.display = 'none';
+          step2.style.display = 'block';
+          stepIndicator.textContent = 'Step 2 of 3: Take a selfie';
+        }
+      }
+    });
+
+    startCamera.addEventListener('click', async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user' },
+          audio: false
+        });
+        activeStream = stream;
+        videoPreview.srcObject = stream;
+        videoPreview.style.display = 'block';
+        takeSelfie.style.display = 'block';
+      } catch (error) {
+        showMessage(errorMessage, '❌ Camera access denied. Please allow camera permissions.');
+      }
+    });
+
+    takeSelfie.addEventListener('click', async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoPreview.videoWidth;
+      canvas.height = videoPreview.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+      selfieDataURL = canvas.toDataURL('image/jpeg', 0.8);
+      
+      stopCamera();
+      
+      // Auto-validate and save attendance
+      const name = employeeName.value;
+      const entry = getDirectoryEntry(name);
+
+      if (!name || !entry) {
+        showMessage(errorMessage, '❌ Employee not found.');
+        return;
+      }
+
+      const profileKey = `${name}::${entry.id}`;
+      const profiles = getStoredProfiles();
+      const storedProfile = profiles[profileKey];
+
+      if (!storedProfile) {
+        showMessage(errorMessage, '❌ Profile not registered. Contact admin to register your photo.');
+        step2.style.display = 'block';
+        return;
+      }
+
+      // Validate photo match
+      const match = await compareSelfies(selfieDataURL, storedProfile.photo);
+      
+      if (!match) {
+        selfiePreview.src = selfieDataURL;
+        selfiePreview.style.display = 'block';
+        showMessage(errorMessage, '❌ Photo does not match your profile. Please retake.');
+        step2.style.display = 'block';
+        takeSelfie.style.display = 'block';
+        return;
+      }
+
+      // Photo matches - Auto-save attendance
+      const now = new Date();
+      const todayDate = now.toISOString().slice(0, 10);
+      const nowTime = now.toTimeString().slice(0, 5);
+
+      const records = getStoredRecords();
+      const todayRecord = records.find(
+        r => r.name === name && r.date === todayDate && r.mode === 'Employee'
+      );
+
+      if (todayRecord) {
+        // Update with Out time
+        todayRecord.outTime = nowTime;
+        todayRecord.photo = selfieDataURL;
+        showMessage(saveMessage, `✓ Clock-out recorded at ${nowTime}`);
+      } else {
+        // Create new record with In time
+        const timeBasedShiftCode = getShiftCodeByTime();
+        const newRecord = {
+          name,
+          userId: entry.id,
+          password: entry.password,
+          mode: 'Employee',
+          type: 'In',
+          date: todayDate,
+          shiftCode: timeBasedShiftCode,
+          inTime: nowTime,
+          outTime: '—',
+          notes: 'Auto-recorded via staff portal',
+          photo: selfieDataURL
+        };
+        records.push(newRecord);
+        showMessage(saveMessage, `✓ Clock-in recorded at ${nowTime}`);
+      }
+
+      saveRecords(records);
+      
+      // Show success screen briefly then reset
+      selfiePreview.src = selfieDataURL;
+      selfiePreview.style.display = 'block';
+      step2.style.display = 'none';
+      step3.style.display = 'block';
+      stepIndicator.textContent = 'Step 3 of 3: ✓ Attendance Saved';
+      stepIndicator.classList.add('active');
+      showEmployeeDetail(name);
+      
+      setTimeout(() => {
+        resetPortal();
+      }, 2500);
+    });
+
+    confirmAttendance.addEventListener('click', async () => {
+      const name = employeeName.value;
+      const entry = getDirectoryEntry(name);
+
+      if (!name || !entry) {
+        showMessage(errorMessage, 'Employee not found.');
+        return;
+      }
+
+      if (!selfieDataURL) {
+        showMessage(errorMessage, 'No selfie captured.');
+        return;
+      }
+
+      const profileKey = `${name}::${entry.id}`;
+      const profiles = getStoredProfiles();
+      const storedProfile = profiles[profileKey];
+
+      if (!storedProfile) {
+        showMessage(errorMessage, '❌ Profile not registered. Contact admin.');
+        return;
+      }
+
+      const match = await compareSelfies(selfieDataURL, storedProfile.photo);
+      if (!match) {
+        showMessage(errorMessage, '❌ Selfie does not match your profile. Please try again.');
+        return;
+      }
+
+      // Get today's attendance data
+      const now = new Date();
+      const todayDate = now.toISOString().slice(0, 10);
+      const nowTime = now.toTimeString().slice(0, 5);
+
+      const records = getStoredRecords();
+      const todayRecord = records.find(
+        r => r.name === name && r.date === todayDate && r.mode === 'Employee'
+      );
+
+      if (todayRecord) {
+        // Update with Out time
+        todayRecord.outTime = nowTime;
+        todayRecord.photo = selfieDataURL;
+        showMessage(saveMessage, `✓ Clock-out recorded at ${nowTime}`);
+      } else {
+        // Create new record with In time
+        const newRecord = {
+          name,
+          userId: entry.id,
+          password: entry.password,
+          mode: 'Employee',
+          type: 'In',
+          date: todayDate,
+          shiftCode: entry.shiftCode,
+          inTime: nowTime,
+          outTime: '—',
+          notes: 'Auto-recorded via staff portal',
+          photo: selfieDataURL
+        };
+        records.push(newRecord);
+        showMessage(saveMessage, `✓ Clock-in recorded at ${nowTime}`);
+      }
+
+      saveRecords(records);
+      setTimeout(() => {
+        resetPortal();
+      }, 2000);
+    });
+
+    retakePhoto.addEventListener('click', () => {
+      step2.style.display = 'block';
+      step3.style.display = 'none';
+      stepIndicator.textContent = 'Step 2 of 3: Take a selfie';
+      selfieDataURL = '';
+      selfiePreview.src = '';
+      employeeDetail.innerHTML = '';
+      startCamera.click();
+    });
+
+    selfiePreview.addEventListener('click', () => {
+      showEmployeeDetail(employeeName.value);
+    });
+
+    // Real-time clock
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clockDisplay').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    populateEmployees();
+  </script>
+</body>
+</html>
